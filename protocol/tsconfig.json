@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "target": "ES2024",
+    "lib": ["ES2024", "DOM", "DOM.Iterable"],
+    "module": "Preserve",
+    "moduleResolution": "Bundler",
+    "moduleDetection": "force",
+    "verbatimModuleSyntax": true,
+    "erasableSyntaxOnly": true,
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "strict": true,
+    "exactOptionalPropertyTypes": true,
+    "noUncheckedIndexedAccess": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noUncheckedSideEffectImports": true,
+    "useUnknownInCatchVariables": true,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "isolatedModules": true,
+    "skipLibCheck": true,
+    "noErrorTruncation": true,
+    "types": ["bun"],
+    "plugins": [
+      {
+        "name": "@effect/language-service",
+        "namespaceImportPackages": ["effect", "@effect/*"],
+        "diagnostics": false
+      }
+    ]
+  },
+  "include": ["src", "tools", "*.ts"]
+}

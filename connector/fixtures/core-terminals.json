@@ -1,0 +1,72 @@
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "hidden_finished": 0,
+    "terminals": [
+      {
+        "address": "t1",
+        "argv": ["claude"],
+        "cwd": "/home/user/code/project-1",
+        "name": "builder",
+        "title": "",
+        "state": "live",
+        "labels": { "herdr.space": "spA", "herdr.tab": "tbA" },
+        "status": { "app": "claude-code", "state": "working", "title": "Run tests" },
+        "foreground": { "pid": 4242, "name": "2.1.319" }
+      },
+      {
+        "address": "t2",
+        "argv": ["zsh"],
+        "cwd": "/home/user/code/project-1",
+        "name": null,
+        "title": "zsh",
+        "state": "live",
+        "labels": { "herdr.space": "spA", "herdr.tab": "tbA" },
+        "status": null,
+        "foreground": { "pid": 4300 }
+      },
+      {
+        "address": "t3",
+        "argv": ["/usr/local/bin/codex"],
+        "cwd": "",
+        "name": null,
+        "title": "",
+        "state": "live",
+        "labels": null,
+        "status": null,
+        "foreground": null
+      },
+      {
+        "address": "t4",
+        "argv": ["sh"],
+        "cwd": "/tmp",
+        "name": "gone",
+        "title": "",
+        "state": "finished",
+        "labels": {},
+        "status": null
+      },
+      {
+        "address": "t5",
+        "argv": ["claude"],
+        "cwd": "/home/user/code/other",
+        "name": null,
+        "title": "",
+        "state": "live",
+        "labels": { "herdr.space": "spB", "herdr.tab": "tbB" },
+        "status": { "app": "claude-code", "state": "blocked" },
+        "foreground": { "pid": 4343 }
+      },
+      {
+        "address": "t6",
+        "argv": ["pi"],
+        "cwd": "/home/user",
+        "state": "live",
+        "labels": { "herdr.space": "sp B!", "herdr.tab": "x" },
+        "status": { "app": "pi", "state": "error" }
+      },
+      { "address": "t7", "argv": ["vim"], "state": "live", "labels": { "herdr.space": "spC" } }
+    ]
+  }
+}

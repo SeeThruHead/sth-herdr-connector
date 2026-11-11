@@ -1,0 +1,173 @@
+{
+  "id": "cli:api:snapshot",
+  "result": {
+    "snapshot": {
+      "version": "0.9.5",
+      "protocol": 22,
+      "focused_pane_id": "w1:pH",
+      "focused_tab_id": "w1:t2",
+      "focused_workspace_id": "w1",
+      "layouts": [],
+      "workspaces": [
+        {
+          "active_tab_id": "w1:t2",
+          "agent_status": "working",
+          "focused": true,
+          "label": "project-1",
+          "number": 1,
+          "pane_count": 2,
+          "tab_count": 1,
+          "workspace_id": "w1"
+        },
+        {
+          "active_tab_id": "w2:t2",
+          "agent_status": "done",
+          "focused": false,
+          "label": "project-2",
+          "number": 2,
+          "pane_count": 3,
+          "tab_count": 2,
+          "workspace_id": "w2"
+        }
+      ],
+      "tabs": [
+        {
+          "agent_status": "working",
+          "focused": true,
+          "label": "tab-1",
+          "number": 2,
+          "pane_count": 2,
+          "tab_id": "w1:t2",
+          "workspace_id": "w1"
+        },
+        {
+          "agent_status": "unknown",
+          "focused": false,
+          "label": "tab-2",
+          "number": 1,
+          "pane_count": 1,
+          "tab_id": "w2:t1",
+          "workspace_id": "w2"
+        },
+        {
+          "agent_status": "done",
+          "focused": false,
+          "label": "tab-3",
+          "number": 2,
+          "pane_count": 2,
+          "tab_id": "w2:t2",
+          "workspace_id": "w2"
+        }
+      ],
+      "panes": [
+        {
+          "agent": "claude",
+          "agent_session": {
+            "agent": "claude",
+            "kind": "id",
+            "source": "herdr:claude",
+            "value": "55369201-d496-487b-b929-d7e8fb6484bb"
+          },
+          "agent_status": "working",
+          "cwd": "/home/user/code/project-1",
+          "focused": true,
+          "foreground_cwd": "/home/user/code/project-1",
+          "pane_id": "w1:pH",
+          "revision": 14,
+          "scroll": {
+            "max_offset_from_bottom": 19647,
+            "offset_from_bottom": 0,
+            "viewport_rows": 45
+          },
+          "tab_id": "w1:t2",
+          "terminal_id": "term_65eb6edd256562b",
+          "terminal_title": "project-1",
+          "terminal_title_stripped": "project-1",
+          "workspace_id": "w1"
+        },
+        {
+          "agent_status": "unknown",
+          "cwd": "/home/user/code/project-2",
+          "focused": false,
+          "foreground_cwd": "/home/user/code/project-2",
+          "label": "helper",
+          "pane_id": "w1:pY",
+          "revision": 0,
+          "scroll": {
+            "max_offset_from_bottom": 212,
+            "offset_from_bottom": 0,
+            "viewport_rows": 3
+          },
+          "tab_id": "w1:t2",
+          "terminal_id": "term_65f29fc574ea646",
+          "workspace_id": "w1",
+          "terminal_title": "project-2",
+          "terminal_title_stripped": "project-2"
+        },
+        {
+          "agent_status": "unknown",
+          "cwd": "/home/user/code/project-3",
+          "focused": false,
+          "foreground_cwd": "/home/user/code/project-3",
+          "pane_id": "w2:p1",
+          "revision": 6,
+          "scroll": {
+            "max_offset_from_bottom": 9028,
+            "offset_from_bottom": 0,
+            "viewport_rows": 52
+          },
+          "tab_id": "w2:t1",
+          "terminal_id": "term_65e6edac2c7615",
+          "workspace_id": "w2",
+          "terminal_title": "project-3",
+          "terminal_title_stripped": "project-3"
+        },
+        {
+          "pane_id": "w2:p2",
+          "workspace_id": "w2",
+          "tab_id": "w2:t2",
+          "agent": "codex",
+          "agent_status": "idle",
+          "focused": false,
+          "revision": 0,
+          "terminal_id": "term_x",
+          "cwd": "/home/user/code/project-4"
+        },
+        {
+          "pane_id": "w2:p3",
+          "workspace_id": "w2",
+          "tab_id": "w2:t2",
+          "agent_status": "unknown",
+          "focused": false,
+          "revision": 0,
+          "terminal_id": "term_y"
+        }
+      ],
+      "agents": [
+        {
+          "agent": "claude",
+          "agent_session": {
+            "agent": "claude",
+            "kind": "id",
+            "source": "herdr:claude",
+            "value": "55369201-d496-487b-b929-d7e8fb6484bb"
+          },
+          "agent_status": "working",
+          "cwd": "/home/user/code/project-1",
+          "focused": true,
+          "foreground_cwd": "/home/user/code/project-1",
+          "pane_id": "w1:pH",
+          "revision": 14,
+          "state_change_seq": 9287,
+          "tab_id": "w1:t2",
+          "terminal_id": "term_65eb6edd256562b",
+          "terminal_title": "project-1",
+          "terminal_title_stripped": "project-1",
+          "workspace_id": "w1",
+          "name": "reviewer"
+        }
+      ]
+    },
+    "type": "session_snapshot"
+  }
+}

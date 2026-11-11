@@ -1,0 +1,39 @@
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "version": 3,
+    "value": {
+      "spaces": [
+        {
+          "id": "spA",
+          "name": "",
+          "folder": "/home/user/code/project-1",
+          "tabs": [
+            {
+              "id": "tbA",
+              "name": "build",
+              "root": {
+                "type": "split",
+                "children": [
+                  { "type": "block", "content": { "terminal": "t1" } },
+                  { "type": "block", "content": { "mod": "files" } }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "spB",
+          "name": "Other work",
+          "folder": null,
+          "tabs": [
+            { "id": "tbB", "name": "", "root": { "type": "block", "content": { "terminal": "t9" } } },
+            { "id": "tbC" }
+          ]
+        },
+        { "id": "spEmpty", "tabs": [] }
+      ]
+    }
+  }
+}

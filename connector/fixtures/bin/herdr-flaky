@@ -1,0 +1,12 @@
+#!/bin/sh
+here="$(cd "$(dirname "$0")/.." && pwd)"
+seen="$here/state/$2.snapshots"
+shift 2
+mkdir -p "$here/state"
+if [ "$1 $2" != "api snapshot" ]; then exec "$here/bin/herdr" "$@"; fi
+echo x >> "$seen"
+if [ "$(wc -l < "$seen")" -lt 3 ]; then
+  echo '{"id":"cli:api:snapshot","result":{"snapshot":{"agents":[],"layouts":[],"panes":[],"protocol":22,"tabs":[],"version":"0.9.5","workspaces":[]},"type":"session_snapshot"}}'
+  exit 0
+fi
+cat "$here/snapshot.json"

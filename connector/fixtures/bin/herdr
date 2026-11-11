@@ -1,0 +1,26 @@
+#!/bin/sh
+here="$(cd "$(dirname "$0")/.." && pwd)"
+if [ "$1" = "--session" ]; then shift 2; fi
+case "$1 $2" in
+  "api snapshot") cat "$here/snapshot.json" ;;
+  "pane read")
+    if [ "$3" = "w5:p5" ]; then echo 'plain failure' >&2; exit 1; fi
+    if [ "$3" = "w6:p6" ]; then exit 1; fi
+    if [ "$3" = "w8:p8" ]; then sleep 30; fi
+    if [ "$7" = "ansi" ]; then printf '\033[1mbold\033[0m %s\n' "$5"; exit 0; fi
+    if [ "$3" = "w9:p9" ]; then echo '{"error":{"code":"pane_not_found","message":"pane w9:p9 not found"},"id":"cli:request"}' >&2; exit 1; fi
+    printf 'line one\nline two\n' ;;
+  "agent prompt") echo '{"id":"cli:agent:prompt","result":{"type":"agent_prompted"}}' ;;
+  "pane send-keys") echo '{"id":"cli:pane:send-keys","result":{"type":"ok"}}' ;;
+  "pane send-text") echo '{"id":"cli:pane:send-text","result":{"type":"ok"}}' ;;
+  "workspace create")
+    case "$4" in "~"*) echo "herdr took the folder as written: $4" >&2; exit 2 ;; esac
+    echo '{"id":"cli","result":{"root_pane":{"pane_id":"w7:p1"}}}' ;;
+  "tab create")
+    case "$6" in "~"*) echo "herdr took the folder as written: $6" >&2; exit 2 ;; esac
+    echo '{"id":"cli","result":{"root_pane":{"pane_id":"w1:p8"}}}' ;;
+  "agent start")
+    if [ "$3" = "waiting" ]; then echo '{"error":{"code":"agent_not_ready","message":"agent waiting is blocked during startup and is not ready for prompts"},"id":"cli:agent:start"}' >&2; exit 1; fi
+    echo '{"id":"cli","result":{"type":"agent_started"}}' ;;
+  *) echo "unexpected $*" >&2; exit 2 ;;
+esac

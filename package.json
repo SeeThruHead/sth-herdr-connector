@@ -1,0 +1,13 @@
+{
+  "name": "sth-herdr-connector-workspace",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "protocol",
+    "connector"
+  ],
+  "scripts": {
+    "check": "bun run --filter \"*\" typecheck && bun run --filter \"*\" format:check && bun run --filter \"*\" test",
+    "build": "bun build --compile connector/src/app/server.ts --outfile dist/sth-herdr-connector"
+  }
+}

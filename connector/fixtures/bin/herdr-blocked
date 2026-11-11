@@ -1,0 +1,15 @@
+#!/bin/sh
+here="$(cd "$(dirname "$0")/.." && pwd)"
+calls="$here/state/$2.calls"
+shift 2
+mkdir -p "$here/state"
+echo "$*" >> "$calls"
+blocked() {
+  echo "{\"error\":{\"code\":\"agent_blocked\",\"message\":\"agent $3 is blocked and requires interactive input\"},\"id\":\"cli:agent:prompt\"}" >&2
+  exit 1
+}
+case "$1 $2 $3" in
+  "agent prompt wB:p1") grep -q "send-keys wB:p1 esc" "$calls" || blocked "$@" ;;
+  "agent prompt wB:p2") blocked "$@" ;;
+esac
+echo '{"id":"cli","result":{"type":"ok"}}'

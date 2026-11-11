@@ -1,0 +1,36 @@
+#!/bin/sh
+here="$(cd "$(dirname "$0")/.." && pwd)"
+session="${HC_SESSION:-default}"
+mkdir -p "$here/state"
+calls="$here/state/core-$session.calls"
+echo "$*" >> "$calls"
+fail() { echo "{\"error\":{\"hint\":\"\",\"kind\":\"$1\",\"message\":\"$2\"}}"; exit 3; }
+case "$1" in
+  connect)
+    read -r line
+    case "$line" in
+      *terminal.list*) if [ "$session" = "garbled" ]; then echo 'nonsense'; else tr -d '\n' < "$here/core-terminals.json"; echo; fi ;;
+      *doc.get*) if [ "$session" = "empty" ]; then echo '{"jsonrpc":"2.0","id":1,"result":{"version":0,"value":null}}'; else tr -d '\n' < "$here/core-doc.json"; echo; fi ;;
+      *server.status*) echo '{"jsonrpc":"2.0","id":1,"result":{"version":"0.1.18","live":3}}' ;;
+    esac ;;
+  read)
+    case "$2" in
+      t9) fail not_found "no terminal t9" ;;
+      t5) echo "plain failure" >&2; exit 1 ;;
+      t8) sleep 30 ;;
+    esac
+    printf '%s\n' '{"complete":true,"how":"history","text":"line one\nline two\n"}' ;;
+  keys)
+    if [ "$2" = "t7" ]; then echo '{"error":{"hint":"","kind":"not_found","message":"no terminal t7"}}'; exit 0; fi
+    echo '{"status":null,"turn":0}' ;;
+  send)
+    case "$2" in
+      tB) grep -q "^keys tB esc" "$calls" || fail blocked "tB is blocked (waiting)" ;;
+      tC) echo "$*" | grep -q -- "--force" || fail blocked "tC is blocked (waiting)" ;;
+    esac
+    echo '{"started":null,"status":null,"turn":0}' ;;
+  run)
+    if [ "$7" = "odd" ]; then echo '{"address":"x/t9","state":"live"}'; exit 0; fi
+    echo '{"address":"t8","agent":"claude","state":"live","turn":0}' ;;
+  *) echo "unexpected $*" >&2; exit 2 ;;
+esac

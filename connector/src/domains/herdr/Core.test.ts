@@ -16,6 +16,7 @@ import {
   terminalOf
 } from "./Core.ts"
 import type { CoreSpace, CoreTerminal } from "./Core.ts"
+import { fromJson } from "@sth-herdr/protocol/Json.ts"
 
 const terminal = (address: string, extra: Partial<CoreTerminal> = {}): CoreTerminal => ({
   address,
@@ -165,7 +166,7 @@ describe("talking to hc", () => {
   })
 
   it("writes one JSON-RPC line and reads the first line back", () => {
-    expect(JSON.parse(rpcLine("terminal.list", {}))).toEqual({
+    expect(fromJson(rpcLine("terminal.list", {}))).toEqual({
       jsonrpc: "2.0",
       id: 1,
       method: "terminal.list",

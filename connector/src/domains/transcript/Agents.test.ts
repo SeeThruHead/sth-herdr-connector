@@ -4,6 +4,7 @@ import { Database } from "bun:sqlite"
 import { Effect, FileSystem, Option } from "effect"
 import type { Item } from "@sth-herdr/protocol/Transcript.ts"
 import { Transcript } from "./Transcript.ts"
+import { toJson } from "@sth-herdr/protocol/Json.ts"
 
 const shapeOf = (item: Item): string => {
   if (item._tag === "Said") return `${item.who}${item.failed === true ? " failed" : ""}: ${item.markdown}`
@@ -13,7 +14,7 @@ const shapeOf = (item: Item): string => {
   return `picture ${item.mediaType}`
 }
 
-const lines = (entries: ReadonlyArray<unknown>): string => entries.map((entry) => JSON.stringify(entry)).join("\n")
+const lines = (entries: ReadonlyArray<unknown>): string => entries.map((entry) => toJson(entry)).join("\n")
 
 const piSession = lines([
   { type: "session", version: 3, id: "s1", cwd: "/home/demo" },
@@ -178,7 +179,7 @@ const seeded = (path: string) =>
             session,
             type,
             seq,
-            typeof data === "string" ? data : JSON.stringify(data)
+            typeof data === "string" ? data : toJson(data)
           ])
         )
       }),

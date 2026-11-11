@@ -1,6 +1,7 @@
 import { Array as Arr, Option, Schema } from "effect"
 import { PaneId, TabId, WorkspaceId } from "@sth-herdr/protocol/Herdr.ts"
 import type { AgentStatus, Pane, Snapshot, Tab, Workspace } from "@sth-herdr/protocol/Herdr.ts"
+import { toJson } from "@sth-herdr/protocol/Json.ts"
 
 const Text = Schema.optionalKey(Schema.NullOr(Schema.String))
 
@@ -306,7 +307,7 @@ export const ReadResult = Schema.Struct({ text: Schema.String })
 export const Started = Schema.Struct({ address: Schema.String })
 
 export const rpcLine = (method: string, params: Record<string, unknown>): string =>
-  `${JSON.stringify({ jsonrpc: "2.0", id: 1, method, params })}\n`
+  `${toJson({ jsonrpc: "2.0", id: 1, method, params })}\n`
 
 export const firstLine = (text: string): string => text.split("\n", 1).join("")
 

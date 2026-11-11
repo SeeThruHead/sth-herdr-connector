@@ -13,6 +13,7 @@ import {
 } from "./Found.ts"
 import type { Proc } from "./Processes.ts"
 import { ancestorsOf, baseName, commandOf, cwdOfLsof, processesOf, tableOf } from "./Processes.ts"
+import { toJson } from "@sth-herdr/protocol/Json.ts"
 
 const ps = [
   "    1     0 /sbin/init",
@@ -36,7 +37,7 @@ const procs = processesOf(ps)
 const named = (argv: ReadonlyArray<string>): string => commandOf({ pid: 1, ppid: 0, argv })
 
 const claudeFile = (pid: number, extra: Record<string, unknown>) =>
-  JSON.stringify({ pid, sessionId: `s-${pid}`, cwd: `/home/demo/p${pid}`, kind: "interactive", ...extra })
+  toJson({ pid, sessionId: `s-${pid}`, cwd: `/home/demo/p${pid}`, kind: "interactive", ...extra })
 
 describe("the machine's processes", () => {
   it("reads ps lines into pid, parent and arguments", () => {

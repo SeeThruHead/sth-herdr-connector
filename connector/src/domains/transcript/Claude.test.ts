@@ -1,5 +1,6 @@
 import { describe, expect, it } from "@effect/vitest"
 import { itemsOf, pictureLimit, summaryOf } from "./Claude.ts"
+import { toJson } from "@sth-herdr/protocol/Json.ts"
 
 const transcript = await Bun.file(new URL("../../../fixtures/transcript.jsonl", import.meta.url)).text()
 
@@ -60,7 +61,7 @@ describe("reading a Claude transcript", () => {
   })
 
   it("leaves out a picture too large for a phone and says so", () => {
-    const huge = JSON.stringify({
+    const huge = toJson({
       type: "user",
       uuid: "big",
       message: {
@@ -82,13 +83,13 @@ describe("reading a Claude transcript", () => {
 
   it("shows a message sent while the agent was working, and ignores other attachments", () => {
     const lines = [
-      JSON.stringify({
+      toJson({
         type: "attachment",
         uuid: "q1",
         attachment: { type: "queued_command", prompt: "That one didn't show up.", commandMode: "prompt" }
       }),
-      JSON.stringify({ type: "attachment", uuid: "q2", attachment: { type: "hook_success" } }),
-      JSON.stringify({
+      toJson({ type: "attachment", uuid: "q2", attachment: { type: "hook_success" } }),
+      toJson({
         type: "attachment",
         uuid: "q3",
         attachment: {
@@ -110,7 +111,7 @@ describe("reading a Claude transcript", () => {
 
   it("shows a pasted message as the text that was pasted, without Claude's paste markers", () => {
     const lines = [
-      JSON.stringify({
+      toJson({
         type: "user",
         uuid: "p1",
         message: {
@@ -122,7 +123,7 @@ describe("reading a Claude transcript", () => {
           ]
         }
       }),
-      JSON.stringify({
+      toJson({
         type: "user",
         uuid: "p2",
         message: { content: 'before <pasted_content id="a1">\npasted\n</pasted_content id="a1"> after' }
@@ -137,14 +138,14 @@ describe("reading a Claude transcript", () => {
 
   it("leaves out background task notices and reminders Claude Code adds to a message", () => {
     const lines = [
-      JSON.stringify({
+      toJson({
         type: "user",
         uuid: "n1",
         message: {
           content: "<task-notification>\n<task-id>b1</task-id>\n<status>completed</status>\n</task-notification>"
         }
       }),
-      JSON.stringify({
+      toJson({
         type: "user",
         uuid: "n2",
         message: { content: "Look again.\n<system-reminder>\nUse the tools.\n</system-reminder>" }
@@ -156,7 +157,7 @@ describe("reading a Claude transcript", () => {
 
   it("shows the files sent with a message by name, above the message", () => {
     const lines = [
-      JSON.stringify({
+      toJson({
         type: "user",
         uuid: "u1",
         message: {
@@ -164,7 +165,7 @@ describe("reading a Claude transcript", () => {
             "Look at this\n\n[Attached: /Users/demo/.cache/sth-herdr/uploads/1762-0-image.png]\n[Attached: /x/1762-1-a.pdf]"
         }
       }),
-      JSON.stringify({ type: "user", uuid: "u2", message: { content: "[Attached: /x/1762-0-b.png]" } })
+      toJson({ type: "user", uuid: "u2", message: { content: "[Attached: /x/1762-0-b.png]" } })
     ].join("\n")
 
     expect(itemsOf(lines).map((item) => (item._tag === "Said" ? [item.id, item.markdown] : []))).toEqual([
@@ -178,36 +179,36 @@ describe("reading a Claude transcript", () => {
   it("shows a slash command as what you typed, and what it printed under it", () => {
     const esc = String.fromCodePoint(27)
     const lines = [
-      JSON.stringify({
+      toJson({
         type: "system",
         subtype: "local_command",
         uuid: "c1",
         content:
           "<command-name>/context</command-name>\n<command-message>context</command-message>\n<command-args></command-args>"
       }),
-      JSON.stringify({
+      toJson({
         type: "system",
         subtype: "local_command",
         uuid: "c2",
         content: `<local-command-stdout> ${esc}[1mContext Usage${esc}[22m\n94k tokens</local-command-stdout>`
       }),
-      JSON.stringify({
+      toJson({
         type: "system",
         subtype: "local_command",
         uuid: "c3",
         content: "<local-command-stdout></local-command-stdout>"
       }),
-      JSON.stringify({
+      toJson({
         type: "user",
         uuid: "c4",
         message: { content: "<command-name>/review</command-name><command-args>the diff</command-args>" }
       }),
-      JSON.stringify({
+      toJson({
         type: "user",
         uuid: "c5",
         message: { content: "<local-command-stderr>no such thing</local-command-stderr>" }
       }),
-      JSON.stringify({
+      toJson({
         type: "system",
         subtype: "local_command",
         uuid: "c6",
@@ -226,12 +227,12 @@ describe("reading a Claude transcript", () => {
 
   it("marks a stopped turn as interrupted, on the agent's side", () => {
     const lines = [
-      JSON.stringify({
+      toJson({
         type: "user",
         uuid: "i1",
         message: { content: [{ type: "text", text: "[Request interrupted by user]" }] }
       }),
-      JSON.stringify({ type: "user", uuid: "i2", message: { content: "[Request interrupted by user for tool use]" } })
+      toJson({ type: "user", uuid: "i2", message: { content: "[Request interrupted by user for tool use]" } })
     ].join("\n")
 
     expect(itemsOf(lines)).toEqual([
@@ -242,7 +243,7 @@ describe("reading a Claude transcript", () => {
 
   it("shows an API error as a failed reply with Claude's own words", () => {
     const lines = [
-      JSON.stringify({
+      toJson({
         type: "assistant",
         uuid: "e1",
         isApiErrorMessage: true,
@@ -254,8 +255,8 @@ describe("reading a Claude transcript", () => {
           ]
         }
       }),
-      JSON.stringify({ type: "assistant", uuid: "e2", isApiErrorMessage: true, message: { content: "" } }),
-      JSON.stringify({ type: "assistant", uuid: "e3", isApiErrorMessage: true, message: { content: "API Error: 500" } })
+      toJson({ type: "assistant", uuid: "e2", isApiErrorMessage: true, message: { content: "" } }),
+      toJson({ type: "assistant", uuid: "e3", isApiErrorMessage: true, message: { content: "API Error: 500" } })
     ].join("\n")
 
     expect(itemsOf(lines)).toEqual([

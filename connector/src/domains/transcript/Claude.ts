@@ -2,6 +2,7 @@ import { Array as Arr, Option, Schema } from "effect"
 import { changeOf } from "./Change.ts"
 import { ItemId, Picture } from "@sth-herdr/protocol/Transcript.ts"
 import type { Item } from "@sth-herdr/protocol/Transcript.ts"
+import { toPrettyJson } from "@sth-herdr/protocol/Json.ts"
 
 const MediaType = Picture.fields.mediaType
 
@@ -208,7 +209,7 @@ const itemsOfBlock = (line: Line, block: Block, index: number): ReadonlyArray<Pa
         id: ItemId.make(block.id),
         tool: block.name,
         summary: summaryOf(block.input),
-        detail: clip(JSON.stringify(block.input, null, 2), detailLimit),
+        detail: clip(toPrettyJson(block.input), detailLimit),
         ...Option.match(changeOf(block.name, block.input), { onNone: () => ({}), onSome: (change) => ({ change }) })
       }
     ]

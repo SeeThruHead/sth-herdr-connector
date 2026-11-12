@@ -13,7 +13,7 @@ import type { ScreenChunk, ScreenSettings } from "../domains/screens/Screens.ts"
 import { execute } from "../features/commands/handlers.ts"
 import { withFailures } from "./failures.ts"
 
-export const connectorVersion = "0.2.0"
+export const connectorVersion = "0.3.0"
 
 export type HubSettings = { readonly hubUrl: string; readonly token: Redacted.Redacted }
 

@@ -64,7 +64,8 @@ export const StartAgent = Schema.TaggedStruct("StartAgent", {
   cwd: Directory,
   kind: AgentKind,
   name: AgentName,
-  source: Schema.optionalKey(SourceName)
+  source: Schema.optionalKey(SourceName),
+  task: Schema.optionalKey(PromptText)
 })
 
 export const ScreenId = Schema.String.check(Schema.isUUID(7)).pipe(Schema.brand("ScreenId"))

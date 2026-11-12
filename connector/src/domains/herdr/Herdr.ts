@@ -174,6 +174,7 @@ export class Herdr extends Context.Service<
       Herdr,
       Effect.gen(function* () {
         const spawner = yield* ChildProcessSpawner.ChildProcessSpawner
+        const fs = yield* FileSystem.FileSystem
         const session = Option.match(settings.session, { onNone: () => [], onSome: (name) => ["--session", name] })
 
         const run = (args: ReadonlyArray<string>, timeout: Duration.Input) =>
@@ -223,11 +224,9 @@ export class Herdr extends Context.Service<
         })
 
         const start = Effect.fn("Herdr.start")(function* (options: StartOptions) {
-          const created = yield* json(
-            CreatedPane,
-            freshPane(options.workspace, expandHome(options.cwd, settings.home), options.name),
-            "10 seconds"
-          )
+          const cwd = expandHome(options.cwd, settings.home)
+          yield* fs.makeDirectory(cwd, { recursive: true }).pipe(Effect.ignore)
+          const created = yield* json(CreatedPane, freshPane(options.workspace, cwd, options.name), "10 seconds")
           const pane = created.result.root_pane.pane_id
           yield* run(["agent", "start", options.name, "--kind", options.kind, "--pane", pane], startTimeout).pipe(
             Effect.retry({
@@ -391,6 +390,7 @@ export class Herdr extends Context.Service<
           const fresh = yield* freshName
           const place = newPlace(options.workspace, fresh)
           const cwd = expandHome(options.cwd, settings.home)
+          yield* fs.makeDirectory(cwd, { recursive: true }).pipe(Effect.ignore)
           const started = yield* json(
             Started,
             runArgs({ name: options.name, cwd, kind: options.kind, place }),

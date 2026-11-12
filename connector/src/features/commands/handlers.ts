@@ -1,4 +1,4 @@
-import { Effect, Match, Option, Schedule } from "effect"
+import { Effect, Match, Option, Schedule, Schema } from "effect"
 import type { HubCommand, Outcome } from "@sth-herdr/protocol/Connector.ts"
 import type { PaneId, Snapshot } from "@sth-herdr/protocol/Herdr.ts"
 import { Agents } from "../../domains/agents/Agents.ts"
@@ -8,6 +8,10 @@ import { Uploads, withAttached } from "../../domains/uploads/Uploads.ts"
 import { SlashCommands } from "../../domains/slashcommands/SlashCommands.ts"
 
 const done: Outcome = { _tag: "Done" }
+
+class AgentNotReady extends Schema.TaggedError<AgentNotReady, { readonly brand: unique symbol }>()("AgentNotReady", {
+  pane: Schema.String
+}) {}
 
 const ownWords: ReadonlySet<string> = new Set(["ScreenFailed", "UploadFailed"])
 
@@ -47,6 +51,31 @@ const slashCommands = Effect.fn("Commands.slashCommands")(function* (pane: PaneI
   return { _tag: "CommandsListed", commands: yield* slash.list(found.cwd) } satisfies Outcome
 })
 
+const resting: ReadonlyArray<string> = ["idle", "done"]
+
+const readyIn = (snapshot: Snapshot, pane: PaneId): boolean =>
+  snapshot.panes.some((candidate) => candidate.id === pane && resting.includes(candidate.status))
+
+const firstMessage = Effect.fn("Commands.firstMessage")(
+  function* (pane: PaneId, task: string) {
+    const herdr = yield* Agents
+    yield* herdr.snapshot.pipe(
+      Effect.flatMap((snapshot) => (readyIn(snapshot, pane) ? Effect.void : new AgentNotReady({ pane }))),
+      Effect.retry({ schedule: Schedule.spaced("1 second"), times: 90 })
+    )
+    yield* herdr.prompt(pane, task)
+  },
+  Effect.catchCause((cause) => Effect.logWarning("couldn't give a new agent its first message", cause))
+)
+
+const startWithTask = Effect.fn("Commands.start")(function* (start: Extract<HubCommand, { _tag: "StartAgent" }>) {
+  const herdr = yield* Agents
+  const pane = yield* herdr.start(start)
+  if (start.task !== undefined) yield* Effect.forkDetach(firstMessage(pane, start.task))
+
+  return { _tag: "Started", pane } satisfies Outcome
+})
+
 export const execute = Effect.fn("Commands.execute")(function* (command: HubCommand) {
   const herdr = yield* Agents
   const screens = yield* Screens
@@ -63,7 +92,7 @@ export const execute = Effect.fn("Commands.execute")(function* (command: HubComm
       ),
     SendKeys: ({ pane, keys }) => Effect.as(herdr.sendKeys(pane, keys), done),
     SendText: ({ pane, text }) => Effect.as(herdr.sendText(pane, text), done),
-    StartAgent: (start) => Effect.map(herdr.start(start), (pane): Outcome => ({ _tag: "Started", pane })),
+    StartAgent: (start) => startWithTask(start),
     ReadTranscript: ({ pane, limit }) => conversation(pane, limit),
     OpenScreen: ({ screen, cols, rows }) => Effect.as(screens.open(screen, cols, rows), done),
     ScreenInput: ({ screen, data }) => Effect.as(screens.input(screen, data), done),

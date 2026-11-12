@@ -15,7 +15,9 @@ import { Uploads } from "../../domains/uploads/Uploads.ts"
 import { SlashCommands, builtIn } from "../../domains/slashcommands/SlashCommands.ts"
 import { execute } from "./handlers.ts"
 
-const herdrSource = (herdr: Layer.Layer<Herdr, never, ChildProcessSpawner.ChildProcessSpawner>) =>
+const herdrSource = (
+  herdr: Layer.Layer<Herdr, never, ChildProcessSpawner.ChildProcessSpawner | FileSystem.FileSystem>
+) =>
   Effect.scoped(
     Effect.map(Layer.build(herdr), (context) => sourceOf("herdr", multiplexerAbilities, Context.get(context, Herdr)))
   )
